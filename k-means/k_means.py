@@ -5,6 +5,57 @@ import matplotlib.pyplot as plt
 import os.path
 
 class Utilities:
+
+	flag = True
+
+	def __init__(self):
+		
+		self.previous_centroids = []
+		
+
+	def is_first_time(self):
+		return self.flag
+
+	def first_time(self):
+		self.flag = False
+
+	def set_previous_centroids(self, centroids):
+		self.previous_centroids.clear()
+		self.previous_centroids = centroids
+		print("self previous ", self.previous_centroids)
+		print("get previous ", self.get_previous_centroids())
+	
+	def get_previous_centroids(self):
+		print("gettin ", self.previous_centroids)
+		return self.previous_centroids
+
+	# compute the difference between sets of centroids and determine if we should continue algorithm 
+	def check_centroids(self, centroids, previous_centroids):
+		print("checking")
+		previous_cents = previous_centroids
+		print("previous check ", previous_cents)
+		print("previous check ", self.previous_centroids)
+		print("length ", len(previous_cents))
+
+		values = []
+		
+		
+		for i in range(0, len(centroids)):
+			arr = np.array(centroids[i])
+			arr2 = np.array(previous_cents[i])		
+			num = np.linalg.norm(arr - arr2)		
+			values.append(num)
+		sum = 0
+		print("sum")
+		for i in range(0, len(values)):
+			sum += values[i]
+		print("sum ", sum)
+		if sum < .05:
+			print("STOP")
+			return False
+		else:
+			return True
+
 	# returns x many random selection from given data
 	@staticmethod
 	def get_centroids(petal, sepal, num):
@@ -15,8 +66,9 @@ class Utilities:
 		return list
 
 	@staticmethod
-	def run_kmean(centroids, petal_list, sepal_list, K):
-		plt.show()
+	def run_kmean(centroids, petal_list, sepal_list, K, iterations):
+		print("start")
+		previous_centroids = centroids
 		distance_centroid_pair_list = []
 		distance_list = []
 		data_point_list = []
@@ -31,17 +83,15 @@ class Utilities:
 		#iterate over each value in the list of petal, sepal ratio values and perform calculation of ratio data point to centroid distance
 		for x in range(0, len(data_point_list)):
 			for i in range(0, len(centroids)): #iterate over each centroid
-				#print("data_point at x ", data_point_list[x])
-				#print("centroid at i ", centroids[i])
+
 				data_point_arr = np.array(data_point_list[x]) # create numpy array in order to use numpy to perform distance calculation
 				cent_arr = np.array(centroids[i]) # same as above fr centroid
-				#print("np arr ", data_point_arr)
-				#print("np arr2 ", cent_arr)
+
 				dist = np.linalg.norm(data_point_arr - cent_arr) # calculate the distance between the data point and the centroid
-				#print("dist calculation is ", dist)				
+			
 				distance_centroid_pair_list.append([dist, centroids[i], data_point_list[x]]) # add the [distance, centroid, data point] to a list
 				distance_list.append(dist)
-		#print("pair list ", distance_centroid_pair_list)
+
 
 		#create clusters
 		for i in range(0, len(petal_list)): #iterate over each data point using petal_list as length
@@ -118,10 +168,20 @@ class Utilities:
 
 		for x in range(0, len(new_centroids)):
 			plt.scatter(new_centroids[x][0], new_centroids[x][1], c='yellow')
-		
 		util = Utilities()
-		util.run_kmean(new_centroids, petal_list, sepal_list, 4)
-
+		
+		
+		print("iters ", iterations)
+		print("one ", util.check_centroids(new_centroids, previous_centroids))
+		print("two ", iterations != 0)
+		if util.check_centroids(new_centroids, previous_centroids) and iterations != 0:
+			util.first_time()
+			util.set_previous_centroids(new_centroids)
+			util.run_kmean(new_centroids, petal_list, sepal_list, K, iterations-1)
+		else:
+			print("stopping")
+			plt.show()
+		
 # create data frame from the database using pandas and fetch data using head
 my_path = r'Iris.csv'
 data = pd.read_csv(my_path)
@@ -170,11 +230,11 @@ print(centroids)
 #util.run_kmean(centroids, petal_ratio_list, sepal_ratio_list, K)
 for i in range(0, len(centroids)):
 	plt.scatter(centroids[i][0], centroids[i][1], c='yellow')
-util.run_kmean(centroids, petal_ratio_list, sepal_ratio_list, K)
+util.run_kmean(centroids, petal_ratio_list, sepal_ratio_list, K, 100)
 
 
 
-plt.show()
+
 
 
 
