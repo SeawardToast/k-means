@@ -75,10 +75,7 @@ class Utilities:
 				if cluster_pair_list[x][1] == centroids[y]:
 					print("belongs to centroid ", centroids[y])
 					clusters[y].append([cluster_pair_list[x][0]])
-		print("clusters at 0 ", clusters[0])
-		print("clusters at 1 ",clusters[1])
-		print("clusters at 2 ",clusters[2])
-		
+				
 		new_centroids = []
 		
 		plt.clf()
@@ -99,6 +96,8 @@ class Utilities:
 					plt.scatter(clusters[i][t][0][0],clusters[i][t][0][1],c='blue')
 				if i == 2:
 					plt.scatter(clusters[i][t][0][0],clusters[i][t][0][1],c='green')
+				if i == 3:
+					plt.scatter(clusters[i][t][0][0],clusters[i][t][0][1],c='purple')
 				print("cluster ", i, " contains ", x)
 				print("x is ", x)
 				print("y is ", y)
@@ -113,7 +112,7 @@ class Utilities:
 			plt.scatter(new_centroids[x][0], new_centroids[x][1], c='yellow')
 		plt.show()
 		util = Utilities()
-		util.run_kmean(new_centroids, petal_ratio_list, sepal_ratio_list, 3)
+		util.run_kmean(new_centroids, petal_ratio_list, sepal_ratio_list, 4)
 
 # create data frame from the database using pandas and fetch data using head
 my_path = r'Iris.csv'
@@ -142,7 +141,7 @@ plt.ylabel("Sepal Ratio")
 
 
 #number of clusters
-K = 3
+K = 4
 
 #assigning centroids
 
