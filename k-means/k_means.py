@@ -170,7 +170,8 @@ class Utilities:
 			plt.scatter(new_centroids[x][0], new_centroids[x][1], c='yellow')
 		util = Utilities()
 		
-		
+		if iterations == 99:
+			plt.show()
 		print("iters ", iterations)
 		print("one ", util.check_centroids(new_centroids, previous_centroids))
 		print("two ", iterations != 0)
